@@ -49,19 +49,21 @@ _add_shared_sources_lib()
 #####################################################################################
 # Source files for this project
 #
-file(GLOB SOURCE_FILES *.cpp *.hpp *.inl *.h *.c)
+file(GLOB SOURCE_FILES *.cpp *.hpp *.inl *.h *.c *.cxx)
 file(GLOB GLSL_FILES *.glsl)
+
 
 #####################################################################################
 # Executable
 #
 add_executable(${PROJNAME} ${SOURCE_FILES} ${COMMON_SOURCE_FILES} ${PACKAGE_SOURCE_FILES} ${GLSL_FILES})
 
+set_source_files_properties(shaders.cxx PROPERTIES COMPILE_FLAGS -shader)
 #####################################################################################
 # common source code needed for this sample
 #
 source_group(common FILES 
-  ${COMMON_SOURCE_FILES}
+  ${COMMON_SOURCE_FILES} 
   ${PACKAGE_SOURCE_FILES}
 )
 source_group("Source Files" FILES ${SOURCE_FILES})
@@ -69,11 +71,11 @@ source_group("Source Files" FILES ${SOURCE_FILES})
 # at compile-time):
 source_group("GLSL Files" FILES ${GLSL_FILES})
 
-if(UNIX)
-  set(UNIXLINKLIBS dl pthread)
-else()
-  set(UNIXLINKLIBS)
-endif()
+
+set(UNIXLINKLIBS dl pthread)
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+target_link_libraries(${PROJNAME} PRIVATE Threads::Threads)
 
 #####################################################################################
 # Linkage
@@ -87,6 +89,7 @@ endforeach(DEBUGLIB)
 foreach(RELEASELIB ${LIBRARIES_OPTIMIZED})
   target_link_libraries(${PROJNAME} optimized ${RELEASELIB})
 endforeach(RELEASELIB)
+
 
 #####################################################################################
 # copies binaries that need to be put next to the exe files (ZLib, etc.)

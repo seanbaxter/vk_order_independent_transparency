@@ -77,6 +77,7 @@
 // SceneData Uniform Buffer Object
 #ifdef __cplusplus
 // Note: This assumes that <nvmath/nvmath_glsltypes.h> has already been included.
+namespace nvmath { }
 using namespace nvmath;  // Make nvmath::mat4 correspond to mat4, e.g.
 #endif                   // #ifdef __cplusplus
 
